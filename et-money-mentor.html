@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ET Money Mentor — AI Financial Advisor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,900;1,9..144,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --bg:        #09101E;
+  --surface:   #101827;
+  --surface2:  #161F30;
+  --surface3:  #1C2840;
+  --border:    #243048;
+  --border2:   #2E3D5C;
+  --accent:    #F5A623;
+  --accent-h:  #F97316;
+  --green:     #10B981;
+  --purple:    #818CF8;
+  --pink:      #F472B6;
+  --red:       #F87171;
+  --blue:      #38BDF8;
+  --text:      #F0F4FF;
+  --muted:     #8896B3;
+  --muted2:    #5E6E8A;
+  --p1:        #818CF8;
+  --p2:        #F472B6;
+}
+
+/* ============================================================
+   RESET + BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+h1,h2,h3,h4 { font-family: 'Fraunces', serif; font-weight: 900; line-height: 1.1; }
+h1 { font-size: clamp(28px,5vw,48px); }
+h2 { font-size: clamp(20px,3vw,28px); }
+h3 { font-size: 18px; }
+h4 { font-size: 15px; }
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.app { display: flex; flex-direction: column; min-height: 100vh; }
+
+/* HEADER */
+.header {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(9,16,30,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-h) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-size: 18px; font-weight: 900; color: var(--bg);
+  flex-shrink: 0;
+}
+.logo-text { display: flex; flex-direction: column; }
+.logo-name { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 900; color: var(--text); line-height: 1; }
+.logo-sub  { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+.header-badge {
+  font-size: 10px; padding: 4px 10px; border-radius: 20px;
+  background: rgba(245,166,35,0.1); border: 1px solid rgba(245,166,35,0.3);
+  color: var(--accent); letter-spacing: 0.5px;
+}
+
+/* SIDEBAR NAV */
+.layout { display: flex; flex: 1; }
+.sidebar {
+  width: 220px; flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 20px 12px;
+  position: sticky; top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.nav-section-label {
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted2); margin: 16px 8px 8px; font-weight: 600;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  cursor: pointer; color: var(--muted);
+  transition: all 0.18s; margin-bottom: 2px;
+  border: 1px solid transparent;
+  user-select: none;
+}
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active {
+  background: rgba(245,166,35,0.1);
+  border-color: rgba(245,166,35,0.25);
+  color: var(--accent);
+}
+.nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+.nav-label { font-size: 13px; font-weight: 500; }
+.nav-item.active .nav-label { font-weight: 600; }
+.sidebar-footer {
+  margin-top: auto; padding: 12px; border-radius: 10px;
+  background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2);
+  font-size: 10px; color: var(--muted); line-height: 1.5;
+}
+.sidebar-footer strong { color: var(--green); }
+
+/* MAIN CONTENT */
+.content { flex: 1; overflow-y: auto; padding: 28px; }
+.page { display: none; animation: fadeUp 0.3s ease; }
+.page.active { display: block; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+/* ============================================================
+   COMPONENTS
+   ============================================================ */
+
+/* Cards */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.card-sm { padding: 16px; border-radius: 12px; }
+
+/* Grid */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+
+/* Metric Cards */
+.metric {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+.metric-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+.metric-value { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 900; line-height: 1; }
+.metric-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* Form Controls */
+.form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+.form-group label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); font-weight: 600; }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(245,166,35,0.1);
+}
+.form-group select option { background: var(--surface2); }
+.inp-wrap { position: relative; }
+.inp-prefix { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--accent); font-weight: 600; font-size: 13px; pointer-events: none; }
+.inp-wrap input { padding-left: 26px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 20px; border-radius: 10px; border: none;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 600;
+  transition: all 0.18s; white-space: nowrap;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-h));
+  color: var(--bg); box-shadow: 0 4px 16px rgba(245,166,35,0.25);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(245,166,35,0.35); }
+.btn-secondary {
+  background: var(--surface2); color: var(--text); border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: var(--surface3); border-color: var(--border2); }
+.btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.btn-ghost:hover { color: var(--text); border-color: var(--border2); }
+.btn-sm { padding: 7px 14px; font-size: 12px; border-radius: 8px; }
+.btn-row { display: flex; gap: 10px; align-items: center; margin-top: 20px; flex-wrap: wrap; }
+
+/* Tags/Badges */
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 9px; border-radius: 20px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.tag-green  { background: rgba(16,185,129,0.12); color: var(--green); border: 1px solid rgba(16,185,129,0.25); }
+.tag-red    { background: rgba(248,113,113,0.12); color: var(--red); border: 1px solid rgba(248,113,113,0.25); }
+.tag-amber  { background: rgba(245,166,35,0.12); color: var(--accent); border: 1px solid rgba(245,166,35,0.25); }
+.tag-purple { background: rgba(129,140,248,0.12); color: var(--purple); border: 1px solid rgba(129,140,248,0.25); }
+.tag-blue   { background: rgba(56,189,248,0.12); color: var(--blue); border: 1px solid rgba(56,189,248,0.25); }
+.tag-pink   { background: rgba(244,114,182,0.12); color: var(--pink); border: 1px solid rgba(244,114,182,0.25); }
+
+/* Insight Rows */
+.insight {
+  display: flex; gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 12px;
+  margin-bottom: 10px; align-items: flex-start;
+}
+.insight-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.insight-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.insight-body { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* Progress / Bar */
+.bar-track { height: 8px; background: var(--surface3); border-radius: 4px; overflow: hidden; }
+.bar-fill  { height: 100%; border-radius: 4px; transition: width 1s ease; }
+.bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.bar-label { font-size: 12px; color: var(--muted); min-width: 130px; }
+.bar-pct   { font-size: 12px; font-weight: 700; min-width: 44px; text-align: right; }
+
+/* Split Bars */
+.split-bar { height: 10px; background: var(--surface3); border-radius: 5px; overflow: hidden; display: flex; }
+.split-fill-p1 { background: var(--p1); transition: width 0.8s ease; }
+.split-fill-p2 { background: var(--p2); transition: width 0.8s ease; }
+
+/* Timeline */
+.timeline { border-left: 2px solid var(--border2); padding-left: 20px; }
+.tl-item { position: relative; margin-bottom: 18px; }
+.tl-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); position: absolute; left: -25px; top: 4px; }
+.tl-year { font-size: 10px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+.tl-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.tl-desc  { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+/* Disclaimer */
+.disclaimer {
+  background: rgba(129,140,248,0.06);
+  border: 1px solid rgba(129,140,248,0.2);
+  border-radius: 12px; padding: 14px 16px;
+  font-size: 11px; color: var(--muted2); line-height: 1.7; margin-top: 24px;
+}
+.disclaimer strong { color: var(--purple); }
+
+/* Section Headers */
+.section-header { margin-bottom: 20px; }
+.section-eyebrow { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+.section-title { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 900; margin-bottom: 6px; }
+.section-sub { font-size: 13px; color: var(--muted); }
+
+/* Partner Columns */
+.partner-col {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px;
+}
+.partner-col.p1 { border-top: 3px solid var(--p1); }
+.partner-col.p2 { border-top: 3px solid var(--p2); }
+.partner-col.joint { border-top: 3px solid var(--green); }
+.partner-head { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.partner-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.partner-name { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+/* Avatar */
+.avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0;
+}
+.av-p1 { background: rgba(129,140,248,0.15); color: var(--p1); }
+.av-p2 { background: rgba(244,114,182,0.15); color: var(--p2); }
+.av-ai { background: rgba(245,166,35,0.15); color: var(--accent); }
+.av-joint { background: rgba(16,185,129,0.15); color: var(--green); }
+
+/* Steps Wizard */
+.steps { display: flex; gap: 2px; margin-bottom: 24px; overflow-x: auto; }
+.step-item {
+  flex: 1; padding: 10px 8px; text-align: center;
+  font-size: 12px; font-weight: 500; color: var(--muted2);
+  border-bottom: 2px solid var(--border);
+  cursor: pointer; transition: all 0.2s; white-space: nowrap; min-width: 80px;
+}
+.step-item.active { color: var(--accent); border-bottom-color: var(--accent); }
+.step-item.done { color: var(--green); border-bottom-color: var(--green); }
+
+/* ============================================================
+   CHAT
+   ============================================================ */
+.chat-outer { display: flex; flex-direction: column; height: 500px; }
+.chat-feed {
+  flex: 1; overflow-y: auto; padding: 16px;
+  display: flex; flex-direction: column; gap: 14px;
+  background: var(--surface2); border-radius: 12px; margin-bottom: 12px;
+}
+.msg { display: flex; gap: 10px; align-items: flex-start; max-width: 90%; }
+.msg.user { align-self: flex-end; flex-direction: row-reverse; }
+.bubble {
+  padding: 11px 14px; border-radius: 14px;
+  font-size: 13px; line-height: 1.65;
+}
+.msg.ai   .bubble { background: var(--surface); border: 1px solid var(--border); border-radius: 4px 14px 14px 14px; }
+.msg.user .bubble { background: rgba(245,166,35,0.12); border: 1px solid rgba(245,166,35,0.25); border-radius: 14px 4px 14px 14px; }
+.bubble b { color: var(--accent); font-weight: 600; }
+.bubble ul { padding-left: 16px; margin-top: 4px; }
+.bubble li { margin-bottom: 3px; }
+.bubble hr { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
+.typing { display: flex; gap: 4px; padding: 4px 0; align-items: center; }
+.typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: bounce 1.2s infinite; }
+.typing span:nth-child(2) { animation-delay: .2s; }
+.typing span:nth-child(3) { animation-delay: .4s; }
+@keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+.chat-row { display: flex; gap: 8px; }
+.chat-input {
+  flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 14px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px;
+  outline: none; resize: none; height: 44px; transition: border-color 0.2s;
+}
+.chat-input:focus { border-color: var(--accent); }
+.chips { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 10px; }
+.chip {
+  padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 500;
+  cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--muted);
+  transition: all 0.18s;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); background: rgba(245,166,35,0.06); }
+
+/* ============================================================
+   HOME PAGE
+   ============================================================ */
+.hero-wrap {
+  position: relative; overflow: hidden;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+  padding: 48px 40px; margin-bottom: 24px; text-align: center;
+}
+.hero-grid-bg {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0.04;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.hero-eyebrow { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+.hero-title { font-family: 'Fraunces', serif; font-size: clamp(32px,5vw,52px); font-weight: 900; line-height: 1.05; margin-bottom: 16px; }
+.hero-title span { color: var(--accent); font-style: italic; }
+.hero-sub { font-size: 15px; color: var(--muted); max-width: 520px; margin: 0 auto 32px; line-height: 1.7; }
+.stat-row { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+.stat-item { text-align: center; }
+.stat-num { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 900; color: var(--accent); }
+.stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 14px; }
+.feat-card {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 14px;
+  padding: 20px 18px; cursor: pointer; transition: all 0.2s; text-align: left;
+}
+.feat-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+.feat-icon { font-size: 26px; margin-bottom: 10px; }
+.feat-name { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+.feat-desc { font-size: 11px; color: var(--muted); line-height: 1.55; }
+.feat-arrow { font-size: 10px; color: var(--accent); margin-top: 10px; }
+
+/* ============================================================
+   SCORE PAGE
+   ============================================================ */
+.score-layout { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+.score-ring-wrap { flex-shrink: 0; text-align: center; }
+.score-ring-wrap svg { filter: drop-shadow(0 0 24px rgba(245,166,35,0.2)); }
+.score-num { font-family: 'Fraunces', serif; font-size: 44px; font-weight: 900; color: var(--accent); line-height: 1; margin-top: -8px; }
+.score-label { font-size: 11px; color: var(--muted); }
+.dims-list { flex: 1; min-width: 260px; }
+
+/* ============================================================
+   TAX PAGE
+   ============================================================ */
+.regime-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+.regime-box {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 18px;
+}
+.regime-box.winner { border-color: var(--green); background: rgba(16,185,129,0.05); }
+.regime-name { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.regime-tax { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 900; }
+.regime-box.winner .regime-tax { color: var(--green); }
+.regime-detail { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+
+/* ============================================================
+   COUPLE PLAN PAGE
+   ============================================================ */
+.couple-banner {
+  display: flex; align-items: center; gap: 14px; padding: 16px 20px;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 20px;
+}
+.couple-banner .plus { color: var(--muted2); font-size: 18px; }
+
+/* NW tracker */
+.nw-bars { margin-top: 12px; }
+.nw-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.nw-label { font-size: 12px; color: var(--muted); min-width: 110px; }
+.nw-bar-track { flex: 1; height: 8px; background: var(--surface3); border-radius: 4px; overflow: hidden; }
+.nw-bar-fill { height: 100%; border-radius: 4px; transition: width 0.9s ease; }
+.nw-val { font-size: 12px; font-weight: 700; min-width: 70px; text-align: right; }
+
+/* ============================================================
+   AI PANEL
+   ============================================================ */
+.ai-box {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px; margin-top: 16px;
+}
+.ai-box-header { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+.ai-box-body { font-size: 13px; line-height: 1.7; }
+.ai-box-body b { color: var(--accent); }
+
+/* ============================================================
+   LOADING STATE
+   ============================================================ */
+.loading-dots { display: flex; gap: 5px; align-items: center; padding: 4px 0; }
+.loading-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: bounce 1.2s infinite; }
+.loading-dots span:nth-child(2) { animation-delay: .2s; }
+.loading-dots span:nth-child(3) { animation-delay: .4s; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .content { padding: 16px; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .regime-compare { grid-template-columns: 1fr; }
+  .score-layout { flex-direction: column; }
+}
+@media (max-width: 600px) {
+  .hero-wrap { padding: 32px 20px; }
+  .stat-row { gap: 20px; }
+  .grid-2, .grid-auto, .feat-grid { grid-template-columns: 1fr; }
+  .metric-grid { grid-template-columns: 1fr 1fr; }
+  .couple-banner { flex-wrap: wrap; }
+}
+
+/* Utility */
+.hidden { display: none !important; }
+.mt8  { margin-top: 8px; }
+.mt12 { margin-top: 12px; }
+.mt16 { margin-top: 16px; }
+.mt24 { margin-top: 24px; }
+.mb8  { margin-bottom: 8px; }
+.mb12 { margin-bottom: 12px; }
+.fw   { width: 100%; }
+.row  { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.flex1 { flex: 1; }
+.text-green  { color: var(--green); }
+.text-red    { color: var(--red); }
+.text-amber  { color: var(--accent); }
+.text-muted  { color: var(--muted); }
+.text-purple { color: var(--purple); }
+.f-serif { font-family: 'Fraunces', serif; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="header">
+    <a class="logo" href="#" onclick="showPage('home')">
+      <div class="logo-icon">₹</div>
+      <div class="logo-text">
+        <span class="logo-name">ET Money Mentor</span>
+        <span class="logo-sub">AI Financial Advisor</span>
+      </div>
+    </a>
+    <div class="header-badge">⚡ Powered by Claude AI</div>
+  </header>
+
+  <div class="layout">
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="sidebar">
+      <div class="nav-section-label">Tools</div>
+
+      <div class="nav-item active" onclick="showPage('home')" id="nav-home">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Home</span>
+      </div>
+      <div class="nav-item" onclick="showPage('score')" id="nav-score">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Money Score</span>
+      </div>
+      <div class="nav-item" onclick="showPage('fire')" id="nav-fire">
+        <span class="nav-icon">🔥</span>
+        <span class="nav-label">FIRE Planner</span>
+      </div>
+      <div class="nav-item" onclick="showPage('advisor')" id="nav-advisor">
+        <span class="nav-icon">💬</span>
+        <span class="nav-label">Life Advisor</span>
+      </div>
+      <div class="nav-item" onclick="showPage('tax')" id="nav-tax">
+        <span class="nav-icon">🧾</span>
+        <span class="nav-label">Tax Wizard</span>
+      </div>
+      <div class="nav-item" onclick="showPage('couple')" id="nav-couple">
+        <span class="nav-icon">💑</span>
+        <span class="nav-label">Couple's Planner</span>
+      </div>
+
+      <div class="sidebar-footer">
+        <strong>⚖️ Disclaimer</strong><br>
+        AI guidance only. Not SEBI-licensed advice. Consult a registered financial advisor for personalised investment decisions.
+      </div>
+    </aside>
+
+    <!-- ===================== MAIN ===================== -->
+    <main class="content">
+
+      <!-- ================================================
+           PAGE: HOME
+           ================================================ -->
+      <div class="page active" id="page-home">
+        <div class="hero-wrap">
+          <div class="hero-grid-bg"></div>
+          <div class="hero-eyebrow">ET AI Hackathon 2026 · Avataar.ai × Economic Times</div>
+          <h1 class="hero-title">Your Personal<br><span>₹ Money Mentor</span></h1>
+          <p class="hero-sub">95% of Indians have no financial plan. In 5 minutes, get a complete AI-powered roadmap tailored to your goals, income, and life stage — free of charge.</p>
+          <div class="stat-row">
+            <div class="stat-item"><div class="stat-num">₹25K+</div><div class="stat-lbl">Cost of a human advisor</div></div>
+            <div class="stat-item"><div class="stat-num">5 min</div><div class="stat-lbl">To your full plan</div></div>
+            <div class="stat-item"><div class="stat-num">6</div><div class="stat-lbl">Financial dimensions scored</div></div>
+            <div class="stat-item"><div class="stat-num">SEBI</div><div class="stat-lbl">Regulatory compliant</div></div>
+          </div>
+          <button class="btn btn-primary" onclick="showPage('score')">Get My Free Score →</button>
+        </div>
+
+        <div class="feat-grid">
+          <div class="feat-card" onclick="showPage('score')">
+            <div class="feat-icon">📊</div>
+            <div class="feat-name">Money Health Score</div>
+            <div class="feat-desc">5-min assessment. Score across 6 financial dimensions — emergency fund, insurance, investments, debt, tax & retirement.</div>
+            <div class="feat-arrow">Try now →</div>
+          </div>
+          <div class="feat-card" onclick="showPage('fire')">
+            <div class="feat-icon">🔥</div>
+            <div class="feat-name">FIRE Path Planner</div>
+            <div class="feat-desc">Month-by-month roadmap to Financial Independence. Exact SIP amounts, asset allocation shifts, milestone targets.</div>
+            <div class="feat-arrow">Plan FIRE →</div>
+          </div>
+          <div class="feat-card" onclick="showPage('advisor')">
+            <div class="feat-icon">💬</div>
+            <div class="feat-name">Life Event Advisor</div>
+            <div class="feat-desc">Bonus, marriage, baby, inheritance — AI handles the finance for every major life event with personalised action plans.</div>
+            <div class="feat-arrow">Ask AI →</div>
+          </div>
+          <div class="feat-card" onclick="showPage('tax')">
+            <div class="feat-icon">🧾</div>
+            <div class="feat-name">Tax Wizard</div>
+            <div class="feat-desc">Old vs New regime. Find every deduction you're missing. Save more tax with SEBI/PFRDA-compliant products.</div>
+            <div class="feat-arrow">Analyse taxes →</div>
+          </div>
+          <div class="feat-card" onclick="showPage('couple')">
+            <div class="feat-icon">💑</div>
+            <div class="feat-name">Couple's Planner</div>
+            <div class="feat-desc">India's first joint AI financial plan. Optimise HRA, NPS matching, SIP splits, insurance & combined net worth.</div>
+            <div class="feat-arrow">Plan together →</div>
+          </div>
+        </div>
+
+        <div class="disclaimer">
+          <strong>⚖️ Regulatory Disclaimer:</strong> ET Money Mentor provides AI-generated financial guidance for educational and planning purposes only. This does not constitute licensed financial advice under SEBI (Investment Advisers) Regulations, 2013. All investment decisions should be made in consultation with a SEBI-registered financial advisor. Mutual fund investments are subject to market risks. Past performance is not indicative of future results. Tax calculations are indicative and based on FY 2024-25 slabs.
+        </div>
+      </div>
+
+      <!-- ================================================
+           PAGE: MONEY HEALTH SCORE
+           ================================================ -->
+      <div class="page" id="page-score">
+        <div class="section-header">
+          <div class="section-eyebrow">5-minute assessment</div>
+          <h2 class="section-title">📊 Money Health Score</h2>
+          <p class="section-sub">Comprehensive financial wellness score across 6 dimensions — see exactly where you stand and what to fix first.</p>
+        </div>
+
+        <div class="card" id="score-form-card">
+          <div class="grid-2">
+            <div class="form-group"><label>Monthly Income (₹)</label>
+              <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="s-income" value="75000" placeholder="75000"></div>
+            </div>
+            <div class="form-group"><label>Monthly Expenses (₹)</label>
+              <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="s-expenses" value="55000" placeholder="55000"></div>
+            </div>
+            <div class="form-group"><label>Emergency Fund (months saved)</label>
+              <input type="number" id="s-emergency" value="2" placeholder="2">
+            </div>
+            <div class="form-group"><label>Term Insurance Cover (₹ Lakhs)</label>
+              <input type="number" id="s-insurance" value="0" placeholder="0">
+            </div>
+            <div class="form-group"><label>Existing Investments (₹ Lakhs)</label>
+              <input type="number" id="s-investments" value="5" placeholder="5">
+            </div>
+            <div class="form-group"><label>Monthly SIP Amount (₹)</label>
+              <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="s-sip" value="3000" placeholder="3000"></div>
+            </div>
+            <div class="form-group"><label>Outstanding Loans (₹ Lakhs)</label>
+              <input type="number" id="s-loans" value="8" placeholder="8">
+            </div>
+            <div class="form-group"><label>Your Age</label>
+              <input type="number" id="s-age" value="32" placeholder="32">
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="calcScore()">Calculate My Score</button>
+          </div>
+        </div>
+
+        <div class="hidden" id="score-result-area">
+          <div class="card">
+            <div class="score-layout">
+              <div class="score-ring-wrap">
+                <svg width="170" height="170" viewBox="0 0 170 170">
+                  <circle cx="85" cy="85" r="70" fill="none" stroke="#161F30" stroke-width="14"/>
+                  <circle id="score-ring" cx="85" cy="85" r="70" fill="none"
+                    stroke="url(#sg)" stroke-width="14" stroke-linecap="round"
+                    stroke-dasharray="440" stroke-dashoffset="440"
+                    transform="rotate(-90 85 85)" style="transition:stroke-dashoffset 1.6s ease"/>
+                  <defs>
+                    <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#F5A623"/>
+                      <stop offset="100%" stop-color="#10B981"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="score-num" id="score-num">--</div>
+                <div class="score-label">/ 100 health score</div>
+                <div class="mt8" id="score-verdict-tag"></div>
+              </div>
+              <div class="dims-list" id="dims-list"></div>
+            </div>
+          </div>
+          <div id="score-insights-list"></div>
+          <div class="btn-row">
+            <button class="btn btn-ghost btn-sm" onclick="resetScore()">← Recalculate</button>
+          </div>
+          <div class="disclaimer">
+            <strong>⚖️ Note:</strong> This score is AI-generated based on your inputs and general financial benchmarks. It does not account for your specific life circumstances, dependents, or regional cost-of-living differences. Consult a SEBI-registered financial advisor for a comprehensive plan.
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================
+           PAGE: FIRE PLANNER
+           ================================================ -->
+      <div class="page" id="page-fire">
+        <div class="section-header">
+          <div class="section-eyebrow">Financial Independence, Retire Early</div>
+          <h2 class="section-title">🔥 FIRE Path Planner</h2>
+          <p class="section-sub">Enter your details and get a complete month-by-month roadmap to financial independence — with exact SIP amounts, milestones, and asset shifts.</p>
+        </div>
+
+        <div class="card" id="fire-form-card">
+          <div class="grid-2">
+            <div class="form-group"><label>Current Age</label>
+              <input type="number" id="f-age" value="30" placeholder="30">
+            </div>
+            <div class="form-group"><label>Target FIRE Age</label>
+              <input type="number" id="f-fire-age" value="50" placeholder="50">
+            </div>
+            <div class="form-group"><label>Monthly Take-Home Income (₹)</label>
+              <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="f-income" value="100000" placeholder="100000"></div>
+            </div>
+            <div class="form-group"><label>Monthly Expenses (₹)</label>
+              <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="f-expenses" value="60000" placeholder="60000"></div>
+            </div>
+            <div class="form-group"><label>Existing Corpus (₹ Lakhs)</label>
+              <input type="number" id="f-corpus" value="10" placeholder="10">
+            </div>
+            <div class="form-group"><label>Risk Profile</label>
+              <select id="f-risk">
+                <option value="aggressive">Aggressive (Equity-heavy, 12% return)</option>
+                <option value="moderate" selected>Moderate (Balanced, 10% return)</option>
+                <option value="conservative">Conservative (Debt-heavy, 8% return)</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Expected Annual Income Growth (%)</label>
+              <input type="number" id="f-growth" value="8" placeholder="8">
+            </div>
+            <div class="form-group"><label>Expected Inflation Rate (%)</label>
+              <input type="number" id="f-inflation" value="6" placeholder="6">
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="calcFIRE()">Generate My FIRE Plan</button>
+          </div>
+        </div>
+
+        <div class="hidden" id="fire-result-area">
+          <div class="grid-4 mb12" id="fire-metrics-grid"></div>
+          <div class="grid-2">
+            <div class="card">
+              <h4 class="mb12">Recommended Asset Allocation</h4>
+              <div id="fire-alloc-bars"></div>
+            </div>
+            <div class="card">
+              <h4 class="mb12">FIRE Milestone Timeline</h4>
+              <div class="timeline" id="fire-timeline"></div>
+            </div>
+          </div>
+          <div class="card mt16">
+            <h4 class="mb12">Month-by-Month Action Plan</h4>
+            <div id="fire-actions"></div>
+          </div>
+          <div id="fire-insights-list" class="mt16"></div>
+          <div class="btn-row">
+            <button class="btn btn-ghost btn-sm" onclick="resetFIRE()">← Modify Inputs</button>
+          </div>
+          <div class="disclaimer">
+            <strong>⚖️ Note:</strong> FIRE projections assume consistent market returns, which are not guaranteed. Actual returns may vary significantly. SIP amounts assume step-up of 10%/year matching income growth. This is not a substitute for licensed financial planning.
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================
+           PAGE: LIFE ADVISOR
+           ================================================ -->
+      <div class="page" id="page-advisor">
+        <div class="section-header">
+          <div class="section-eyebrow">AI-powered guidance</div>
+          <h2 class="section-title">💬 Life Event Financial Advisor</h2>
+          <p class="section-sub">Major life event? Get a personalised, actionable financial plan — customised to your tax bracket, income, risk profile, and goals.</p>
+        </div>
+
+        <div class="card">
+          <div class="chips" id="advisor-chips">
+            <div class="chip" onclick="setAdvisorPrompt('bonus')">💰 Got a Bonus</div>
+            <div class="chip" onclick="setAdvisorPrompt('marriage')">💍 Getting Married</div>
+            <div class="chip" onclick="setAdvisorPrompt('baby')">👶 New Baby</div>
+            <div class="chip" onclick="setAdvisorPrompt('inheritance')">🏦 Received Inheritance</div>
+            <div class="chip" onclick="setAdvisorPrompt('regime')">📋 Old vs New Tax Regime</div>
+            <div class="chip" onclick="setAdvisorPrompt('overlap')">📈 Portfolio Overlap</div>
+            <div class="chip" onclick="setAdvisorPrompt('job')">💼 Job Change / Salary Hike</div>
+            <div class="chip" onclick="setAdvisorPrompt('retire')">🧘 Early Retirement</div>
+          </div>
+
+          <div class="chat-outer">
+            <div class="chat-feed" id="advisor-feed">
+              <div class="msg ai">
+                <div class="avatar av-ai">₹</div>
+                <div class="bubble">
+                  Namaste! 🙏 I'm your AI Money Mentor from Economic Times.<br><br>
+                  I can help you navigate <b>major life events</b> — bonuses, marriage, new baby, inheritance, job changes, and more — with personalised, India-specific financial guidance.<br><br>
+                  Pick a scenario above or describe your situation in detail. I'll give you a step-by-step action plan.<br><br>
+                  <em style="font-size:11px;color:var(--muted2);">⚖️ Reminder: This is AI guidance for education purposes, not SEBI-licensed financial advice.</em>
+                </div>
+              </div>
+            </div>
+            <div class="chat-row">
+              <textarea class="chat-input" id="advisor-input" placeholder="Describe your financial situation or life event in detail..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAdvisor();}"></textarea>
+              <button class="btn btn-primary" onclick="sendAdvisor()">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================
+           PAGE: TAX WIZARD
+           ================================================ -->
+      <div class="page" id="page-tax">
+        <div class="section-header">
+          <div class="section-eyebrow">FY 2024-25 · Budget 2024 slabs</div>
+          <h2 class="section-title">🧾 Tax Wizard</h2>
+          <p class="section-sub">Old vs New regime with your actual numbers. Find every deduction you're missing. Personalised to your income structure and risk profile.</p>
+        </div>
+
+        <div class="card" id="tax-form-card">
+          <div class="grid-2">
+            <div class="form-group"><label>Annual CTC / Gross Income (₹)</label>
+              <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="t-ctc" value="1800000" placeholder="1800000"></div>
+            </div>
+            <div class="form-group"><label>Annual HRA Received (₹)</label>
+              <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="t-hra" value="300000" placeholder="300000"></div>
+            </div>
+            <div class="form-group"><label>Annual Rent Paid (₹)</label>
+              <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="t-rent" value="0" placeholder="0"></div>
+            </div>
+            <div class="form-group"><label>80C Investments (EPF+PPF+ELSS+LIC) (₹)</label>
+              <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="t-80c" value="150000" placeholder="150000"></div>
+            </div>
+            <div class="form-group"><label>Home Loan Interest Paid (₹)</label>
+              <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="t-hloan" value="220000" placeholder="220000"></div>
+            </div>
+            <div class="form-group"><label>80D — Health Insurance Premium (₹)</label>
+              <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="t-80d" value="25000" placeholder="25000"></div>
+            </div>
+            <div class="form-group"><label>NPS 80CCD(1B) Contribution (₹)</label>
+              <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="t-nps" value="0" placeholder="0"></div>
+            </div>
+            <div class="form-group"><label>City (for HRA calculation)</label>
+              <select id="t-city">
+                <option value="metro">Metro — Delhi, Mumbai, Chennai, Kolkata</option>
+                <option value="nonmetro">Non-Metro city</option>
+              </select>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="calcTax()">Analyse My Taxes</button>
+          </div>
+        </div>
+
+        <div class="hidden" id="tax-result-area">
+          <div class="card">
+            <h4 class="mb12">Old vs New Regime Comparison</h4>
+            <div class="regime-compare" id="regime-compare"></div>
+            <div id="regime-verdict"></div>
+          </div>
+          <div class="card">
+            <h4 class="mb12">Deduction Breakdown (Old Regime)</h4>
+            <div id="deduction-breakdown"></div>
+          </div>
+          <div class="card">
+            <h4 class="mb12">Untapped Tax-Saving Opportunities</h4>
+            <div id="tax-opportunities"></div>
+          </div>
+          <div class="ai-box" id="tax-ai-box">
+            <div class="ai-box-header">⚡ AI personalised tax suggestions loading...</div>
+            <div class="loading-dots"><span></span><span></span><span></span></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-ghost btn-sm" onclick="resetTax()">← Recalculate</button>
+          </div>
+          <div class="disclaimer">
+            <strong>⚖️ Tax Disclaimer:</strong> Calculations use FY 2024-25 slabs (post Budget 2024). Results are indicative only. Actual tax liability may differ based on perquisites, other income, and surcharges. Consult a Chartered Accountant for your ITR filing.
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================
+           PAGE: COUPLE'S PLANNER
+           ================================================ -->
+      <div class="page" id="page-couple">
+        <div class="section-header">
+          <div class="section-eyebrow">India's first AI-powered joint plan</div>
+          <h2 class="section-title">💑 Couple's Money Planner</h2>
+          <p class="section-sub">Both partners input their data. AI optimises across both incomes — HRA claims, NPS matching, SIP splits for tax efficiency, joint vs individual insurance, and combined net worth tracking.</p>
+        </div>
+
+        <div class="couple-banner" id="couple-banner">
+          <div class="avatar av-p1" id="cb-av1">P1</div>
+          <span class="plus">+</span>
+          <div class="avatar av-p2" id="cb-av2">P2</div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:600;" id="cb-names">Partner 1 &amp; Partner 2</div>
+            <div style="font-size:11px;color:var(--muted);">Fill in both profiles below for your joint optimised plan</div>
+          </div>
+          <div class="avatar av-joint">₹₹</div>
+        </div>
+
+        <div class="steps">
+          <div class="step-item active" id="cst-0" onclick="cGoStep(0)">1. Individual Profiles</div>
+          <div class="step-item" id="cst-1" onclick="cGoStep(1)">2. Goals &amp; Insurance</div>
+          <div class="step-item" id="cst-2" onclick="cGoStep(2)">3. Joint Plan</div>
+        </div>
+
+        <!-- Couple Step 1 -->
+        <div id="c-step-0">
+          <div class="grid-2">
+            <div class="partner-col p1">
+              <div class="partner-head">
+                <div class="partner-dot" style="background:var(--p1)"></div>
+                <div class="partner-name" style="color:var(--p1)">Partner 1</div>
+              </div>
+              <div class="form-group"><label>Full Name</label><input id="c-p1-name" value="Arjun" placeholder="Arjun"></div>
+              <div class="form-group"><label>Age</label><input type="number" id="c-p1-age" value="32" placeholder="32"></div>
+              <div class="form-group"><label>Annual CTC (₹)</label>
+                <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="c-p1-ctc" value="1800000"></div>
+              </div>
+              <div class="form-group"><label>Annual HRA Received (₹)</label>
+                <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="c-p1-hra" value="300000"></div>
+              </div>
+              <div class="form-group"><label>Annual Rent Paid (₹)</label>
+                <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="c-p1-rent" value="0"></div>
+              </div>
+              <div class="form-group"><label>City Type</label>
+                <select id="c-p1-city"><option value="metro">Metro</option><option value="nonmetro">Non-Metro</option></select>
+              </div>
+              <div class="form-group"><label>Monthly Expenses (₹)</label>
+                <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="c-p1-exp" value="45000"></div>
+              </div>
+              <div class="form-group"><label>Existing Investments (₹ Lakhs)</label>
+                <input type="number" id="c-p1-inv" value="12">
+              </div>
+              <div class="form-group"><label>Outstanding Loans (₹ Lakhs)</label>
+                <input type="number" id="c-p1-loan" value="20">
+              </div>
+              <div class="form-group"><label>Risk Profile</label>
+                <select id="c-p1-risk">
+                  <option value="aggressive">Aggressive</option>
+                  <option value="moderate" selected>Moderate</option>
+                  <option value="conservative">Conservative</option>
+                </select>
+              </div>
+            </div>
+            <div class="partner-col p2">
+              <div class="partner-head">
+                <div class="partner-dot" style="background:var(--p2)"></div>
+                <div class="partner-name" style="color:var(--p2)">Partner 2</div>
+              </div>
+              <div class="form-group"><label>Full Name</label><input id="c-p2-name" value="Priya" placeholder="Priya"></div>
+              <div class="form-group"><label>Age</label><input type="number" id="c-p2-age" value="29" placeholder="29"></div>
+              <div class="form-group"><label>Annual CTC (₹)</label>
+                <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="c-p2-ctc" value="1200000"></div>
+              </div>
+              <div class="form-group"><label>Annual HRA Received (₹)</label>
+                <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="c-p2-hra" value="200000"></div>
+              </div>
+              <div class="form-group"><label>Annual Rent Paid (₹)</label>
+                <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="c-p2-rent" value="240000"></div>
+              </div>
+              <div class="form-group"><label>City Type</label>
+                <select id="c-p2-city"><option value="metro">Metro</option><option value="nonmetro" selected>Non-Metro</option></select>
+              </div>
+              <div class="form-group"><label>Monthly Expenses (₹)</label>
+                <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="c-p2-exp" value="30000"></div>
+              </div>
+              <div class="form-group"><label>Existing Investments (₹ Lakhs)</label>
+                <input type="number" id="c-p2-inv" value="5">
+              </div>
+              <div class="form-group"><label>Outstanding Loans (₹ Lakhs)</label>
+                <input type="number" id="c-p2-loan" value="0">
+              </div>
+              <div class="form-group"><label>Risk Profile</label>
+                <select id="c-p2-risk">
+                  <option value="aggressive">Aggressive</option>
+                  <option value="moderate" selected>Moderate</option>
+                  <option value="conservative">Conservative</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="cGoStep(1)">Next: Goals &amp; Insurance →</button>
+          </div>
+        </div>
+
+        <!-- Couple Step 2 -->
+        <div id="c-step-1" class="hidden">
+          <div class="partner-col joint mb12">
+            <div class="partner-head">
+              <div class="partner-dot" style="background:var(--green)"></div>
+              <div class="partner-name" style="color:var(--green)">Joint Goals</div>
+            </div>
+            <div class="grid-2">
+              <div class="form-group"><label>Target Retirement Age</label>
+                <input type="number" id="c-j-retire" value="55" placeholder="55">
+              </div>
+              <div class="form-group"><label>Current Joint Monthly SIP (₹)</label>
+                <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="c-j-sip" value="15000"></div>
+              </div>
+              <div class="form-group"><label>Child Education Goal (₹ Lakhs, 0 if none)</label>
+                <input type="number" id="c-j-edu" value="50">
+              </div>
+              <div class="form-group"><label>Years to Education Goal</label>
+                <input type="number" id="c-j-edu-yr" value="15">
+              </div>
+              <div class="form-group"><label>Home Purchase Goal (₹ Crores, 0 if none)</label>
+                <input type="number" id="c-j-home" value="1.5" step="0.1">
+              </div>
+              <div class="form-group"><label>Years to Home Purchase</label>
+                <input type="number" id="c-j-home-yr" value="5">
+              </div>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="partner-col p1">
+              <div class="partner-head">
+                <div class="partner-dot" style="background:var(--p1)"></div>
+                <div class="partner-name" style="color:var(--p1)" id="c-p1-ins-head">Partner 1 — Insurance &amp; Tax</div>
+              </div>
+              <div class="form-group"><label>Term Insurance Cover (₹ Lakhs)</label>
+                <input type="number" id="c-p1-term" value="0">
+              </div>
+              <div class="form-group"><label>Health Insurance Cover (₹ Lakhs)</label>
+                <input type="number" id="c-p1-health" value="5">
+              </div>
+              <div class="form-group"><label>NPS Contribution / Year (₹)</label>
+                <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="c-p1-nps" value="0"></div>
+              </div>
+              <div class="form-group"><label>80C Investments / Year (₹)</label>
+                <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="c-p1-80c" value="150000"></div>
+              </div>
+            </div>
+            <div class="partner-col p2">
+              <div class="partner-head">
+                <div class="partner-dot" style="background:var(--p2)"></div>
+                <div class="partner-name" style="color:var(--p2)" id="c-p2-ins-head">Partner 2 — Insurance &amp; Tax</div>
+              </div>
+              <div class="form-group"><label>Term Insurance Cover (₹ Lakhs)</label>
+                <input type="number" id="c-p2-term" value="50">
+              </div>
+              <div class="form-group"><label>Health Insurance Cover (₹ Lakhs)</label>
+                <input type="number" id="c-p2-health" value="0">
+              </div>
+              <div class="form-group"><label>NPS Contribution / Year (₹)</label>
+                <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="c-p2-nps" value="50000"></div>
+              </div>
+              <div class="form-group"><label>80C Investments / Year (₹)</label>
+                <div class="inp-wrap"><span class="inp-prefix">₹</span><input type="number" id="c-p2-80c" value="100000"></div>
+              </div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-ghost" onclick="cGoStep(0)">← Back</button>
+            <button class="btn btn-primary" onclick="genCouplePlan()">Generate Joint Plan →</button>
+          </div>
+        </div>
+
+        <!-- Couple Step 3 — Results -->
+        <div id="c-step-2" class="hidden">
+          <div id="couple-results">
+            <div class="card">
+              <div class="ai-box-header">⚡ Generating your joint financial plan...</div>
+              <div class="loading-dots"><span></span><span></span><span></span></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /page-couple -->
+
+    </main>
+  </div>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+/* ===== NAVIGATION ===== */
+const PAGES = ['home','score','fire','advisor','tax','couple'];
+
+function showPage(id) {
+  PAGES.forEach(p => {
+    document.getElementById('page-'+p).classList.toggle('active', p===id);
+    const nav = document.getElementById('nav-'+p);
+    if(nav) nav.classList.toggle('active', p===id);
+  });
+  window.scrollTo(0,0);
+}
+
+/* ===== UTILS ===== */
+const $ = id => document.getElementById(id);
+const g = id => $( id)?.value || '';
+const n = id => parseFloat(g(id)) || 0;
+const fmt    = v => '₹' + Math.round(v).toLocaleString('en-IN');
+const fmtL   = v => (v/100000).toFixed(1) + 'L';
+const fmtCr  = v => (v/10000000).toFixed(2) + ' Cr';
+const fmtLrg = v => v >= 10000000 ? fmtCr(v) : v >= 100000 ? fmtL(v*100000) : fmt(v);
+
+function calcOldTax(taxable) {
+  if(taxable <= 250000) return 0;
+  let t = 0;
+  if(taxable <= 500000) t = (taxable-250000)*0.05;
+  else if(taxable <= 1000000) t = 12500+(taxable-500000)*0.2;
+  else t = 112500+(taxable-1000000)*0.3;
+  return t * 1.04; // 4% cess
+}
+
+function calcNewTax(taxable) {
+  if(taxable <= 300000) return 0;
+  let t = 0;
+  if(taxable <= 700000) t = (taxable-300000)*0.05;
+  else if(taxable <= 1000000) t = 20000+(taxable-700000)*0.1;
+  else if(taxable <= 1200000) t = 50000+(taxable-1000000)*0.15;
+  else if(taxable <= 1500000) t = 80000+(taxable-1200000)*0.2;
+  else t = 140000+(taxable-1500000)*0.3;
+  if(taxable <= 700000) t = Math.max(0, t-25000);
+  return t * 1.04;
+}
+
+function calcHRAExemption(ctc, hra, rent, city) {
+  const basic = ctc * 0.4;
+  const rentExcess = Math.max(0, rent - basic*0.1);
+  const pctBasic = basic * (city==='metro' ? 0.5 : 0.4);
+  return Math.max(0, Math.min(hra, rentExcess, pctBasic));
+}
+
+function bestRegime(ctc, hra, rent, city, c80, d80, nps, hloan) {
+  const hraEx = calcHRAExemption(ctc, hra, rent, city);
+  const oldDed = 50000 + hraEx + Math.min(150000,c80) + Math.min(50000,d80) + Math.min(50000,nps) + Math.min(200000,hloan);
+  const oldTaxable = Math.max(0, ctc-oldDed);
+  const newTaxable = Math.max(0, ctc-75000);
+  const oldTax = calcOldTax(oldTaxable);
+  const newTax = calcNewTax(newTaxable);
+  return { oldTax, newTax, oldTaxable, newTaxable, hraEx, oldDed,
+           better: oldTax<=newTax ? 'Old' : 'New',
+           saving: Math.abs(oldTax-newTax) };
+}
+
+async function callClaude(prompt) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: `You are an AI Money Mentor embedded in Economic Times (ET), India's leading financial publication. You provide concise, personalised financial guidance to Indian users.
+
+RULES:
+- Use Indian financial products: ELSS, PPF, NPS (Tier-1, Tier-2), EPF, SIP, FD, SGBs, REITs, direct equity
+- Reference Indian tax sections: 80C, 80D, 80CCD(1B), 24(b), HRA, 87A rebate, LTCG, STCG
+- Indian number format: ₹, Lakhs (L), Crores (Cr)
+- SEBI, PFRDA, IRDAI, RBI regulatory context
+- Keep responses focused and actionable
+- Use **bold** for key numbers and product names
+- Always mention: "⚖️ AI guidance, not SEBI-licensed advice" at the end`,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  const data = await res.json();
+  return data.content?.map(b=>b.text||'').join('') || 'Unable to fetch AI insights. Please try again.';
+}
+
+/* ===== MONEY HEALTH SCORE ===== */
+function calcScore() {
+  const income = n('s-income') || 75000;
+  const expenses = n('s-expenses') || 55000;
+  const emergency = n('s-emergency') || 0;
+  const insurance = n('s-insurance') || 0;
+  const investments = n('s-investments') || 0;
+  const sip = n('s-sip') || 0;
+  const loans = n('s-loans') || 0;
+  const age = n('s-age') || 32;
+
+  const savingsRate = (income-expenses)/income;
+  const approxEMI = loans*100000*0.009;
+  const emiRatio = approxEMI/income;
+  const incomePA = income*12;
+
+  const dims = [
+    {
+      name: 'Emergency Fund', score: Math.min(100, (emergency/6)*100),
+      color: '#10B981', ideal: '6 months expenses',
+      current: `${emergency} months · target: ₹${(expenses*6).toLocaleString('en-IN')}`
+    },
+    {
+      name: 'Insurance Coverage',
+      score: insurance === 0 ? 5 : Math.min(100, (insurance/(incomePA*10/100000))*100),
+      color: '#818CF8', ideal: `${Math.round(incomePA*10/100000)*10}L term cover`,
+      current: `${insurance}L current cover`
+    },
+    {
+      name: 'Investment Growth',
+      score: Math.min(100, 20 + (sip/income)*300),
+      color: '#F5A623', ideal: '20%+ of income monthly',
+      current: `${Math.round((sip/income)*100)}% of income invested`
+    },
+    {
+      name: 'Debt Health',
+      score: loans===0 ? 100 : Math.max(5, 100-emiRatio*250),
+      color: '#F87171', ideal: 'EMI < 30% of income',
+      current: `EMI ~${Math.round(emiRatio*100)}% of income`
+    },
+    {
+      name: 'Tax Efficiency',
+      score: income > 50000 ? (sip>=5000 ? 65 : sip>=2000 ? 40 : 20) : 55,
+      color: '#F472B6', ideal: 'Max 80C, NPS, HRA',
+      current: sip>=5000 ? 'Partially optimised' : 'Needs work'
+    },
+    {
+      name: 'Retirement Readiness',
+      score: Math.min(100, (investments*100000) / (income*12*(60-age)) * 100),
+      color: '#38BDF8', ideal: '25× annual expenses by 60',
+      current: `₹${investments}L corpus at age ${age}`
+    }
+  ];
+
+  const total = Math.round(dims.reduce((a,d)=>a+d.score,0)/dims.length);
+
+  $('score-form-card').classList.add('hidden');
+  $('score-result-area').classList.remove('hidden');
+
+  setTimeout(()=>{
+    $('score-ring').style.strokeDashoffset = 440 - (440*total/100);
+  },100);
+  $('score-num').textContent = total;
+
+  const vt = $('score-verdict-tag');
+  if(total>=75) { vt.innerHTML='<span class="tag tag-green">✅ Good Financial Health</span>'; }
+  else if(total>=50) { vt.innerHTML='<span class="tag tag-amber">⚠️ Needs Improvement</span>'; }
+  else { vt.innerHTML='<span class="tag tag-red">🚨 Critical Gaps Found</span>'; }
+
+  $('dims-list').innerHTML = dims.map(d=>`
+    <div style="margin-bottom:14px">
+      <div class="row mb8" style="justify-content:space-between">
+        <span style="font-size:13px;font-weight:500">${d.name}</span>
+        <span style="font-size:13px;font-weight:700;color:${d.color}">${Math.round(d.score)}/100</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:0%;background:${d.color}" data-w="${Math.round(d.score)}%"></div></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">${d.current} · Target: ${d.ideal}</div>
+    </div>
+  `).join('');
+  setTimeout(()=>document.querySelectorAll('.bar-fill[data-w]').forEach(el=>{ el.style.width=el.dataset.w; }),200);
+
+  const insights = [];
+  if(dims[0].score<60) insights.push({icon:'🚨',title:'Build Emergency Fund First',tag:'tag-red',body:`You have ${emergency} months saved. Target ₹${(expenses*6).toLocaleString('en-IN')} (6 months). Park it in a liquid mutual fund or high-interest savings account, not FD. Do this before any SIP increase.`});
+  if(dims[1].score<50) insights.push({icon:'🛡️',title:'Critical: No / Low Term Insurance',tag:'tag-red',body:`At ₹${income.toLocaleString('en-IN')}/mo income, you need at least ₹${Math.round(income*120/100000)*10}L term cover. Pure term plans cost ₹800–1,500/mo. NEVER buy ULIP or endowment for insurance.`});
+  if(dims[3].score<50) insights.push({icon:'💳',title:'High Debt Burden',tag:'tag-amber',body:`EMI exceeds 40% of take-home income. Prioritise prepaying highest-interest loan first (avalanche method). Build emergency fund simultaneously. Pause SIP step-ups until debt ratio drops below 30%.`});
+  if(sip < income*0.2) insights.push({icon:'📈',title:`Increase SIP by ₹${Math.round(income*0.2-sip).toLocaleString('en-IN')}`,tag:'tag-amber',body:`You're investing ${Math.round(savingsRate*100)}% of income. 20% minimum recommended. Use auto step-up (10% annually) on ELSS for 80C + tax-saving dual benefit.`});
+  if(dims[4].score<60) insights.push({icon:'🧾',title:'Untapped Tax Savings',tag:'tag-green',body:`Max 80C (₹1.5L via ELSS + EPF), add NPS 80CCD(1B) (₹50K extra), claim HRA if paying rent, 80D (₹25K health insurance). Total potential savings: ₹60,000–1,20,000/year in tax.`});
+  if(dims[5].score<40) insights.push({icon:'🏦',title:'Retirement Corpus Too Low',tag:'tag-amber',body:`At age ${age} with ₹${investments}L, you're behind target. Aim for 25× annual expenses by age 60. Start dedicated retirement SIP in index fund + NPS. Time in market > timing the market.`});
+
+  $('score-insights-list').innerHTML = insights.map(i=>`
+    <div class="insight">
+      <div class="insight-icon">${i.icon}</div>
+      <div><div class="insight-title">${i.title}<span class="tag ${i.tag}">${i.tag.includes('red')?'Critical':i.tag.includes('amber')?'Important':'Opportunity'}</span></div>
+      <div class="insight-body">${i.body}</div></div>
+    </div>
+  `).join('');
+}
+
+function resetScore() {
+  $('score-form-card').classList.remove('hidden');
+  $('score-result-area').classList.add('hidden');
+}
+
+/* ===== FIRE PLANNER ===== */
+function calcFIRE() {
+  const age = n('f-age')||30, fireAge = n('f-fire-age')||50;
+  const income = n('f-income')||100000, expenses = n('f-expenses')||60000;
+  const corpus = n('f-corpus')||10, risk = g('f-risk');
+  const incGrowth = n('f-growth')/100||0.08, inflation = n('f-inflation')/100||0.06;
+
+  const yrs = fireAge-age;
+  const returnRate = risk==='aggressive'?0.12:risk==='moderate'?0.10:0.08;
+  const futureExpMo = expenses*Math.pow(1+inflation,yrs);
+  const fireCorpus = futureExpMo*12*28;
+  const existingFV = corpus*100000*Math.pow(1+returnRate,yrs);
+  const needed = Math.max(0, fireCorpus-existingFV);
+  const mr = returnRate/12;
+  const months = yrs*12;
+  const sipNeeded = needed*mr/(Math.pow(1+mr,months)-1);
+  const savingsNow = income-expenses;
+  const sipGap = Math.max(0, sipNeeded-savingsNow);
+
+  const allocs = risk==='aggressive'
+    ? [{l:'Flexi Cap / Mid Cap',p:40,c:'#10B981'},{l:'Small Cap',p:20,c:'#F5A623'},{l:'International MF',p:15,c:'#818CF8'},{l:'Debt / Gold',p:25,c:'#38BDF8'}]
+    : risk==='moderate'
+    ? [{l:'Large Cap / Index',p:35,c:'#10B981'},{l:'Mid Cap',p:20,c:'#F5A623'},{l:'Debt Funds',p:25,c:'#818CF8'},{l:'Gold / REIT',p:20,c:'#38BDF8'}]
+    : [{l:'Large Cap / Index',p:25,c:'#10B981'},{l:'Debt Funds',p:40,c:'#F5A623'},{l:'PPF / EPF',p:25,c:'#818CF8'},{l:'Gold',p:10,c:'#38BDF8'}];
+
+  $('fire-form-card').classList.add('hidden');
+  $('fire-result-area').classList.remove('hidden');
+
+  $('fire-metrics-grid').innerHTML = `
+    <div class="metric"><div class="metric-label">FIRE Corpus Target</div><div class="metric-value text-amber">${fmtCr(fireCorpus)}</div><div class="metric-sub">At age ${fireAge}</div></div>
+    <div class="metric"><div class="metric-label">Required Monthly SIP</div><div class="metric-value text-amber">${fmt(sipNeeded)}</div><div class="metric-sub">${(returnRate*100).toFixed(0)}% annual return</div></div>
+    <div class="metric"><div class="metric-label">Monthly Expenses at ${fireAge}</div><div class="metric-value" style="color:var(--blue)">${fmt(futureExpMo)}</div><div class="metric-sub">After ${(inflation*100).toFixed(0)}% inflation</div></div>
+    <div class="metric"><div class="metric-label">Years to FIRE</div><div class="metric-value text-green">${yrs}</div><div class="metric-sub">Corpus grows ${((Math.pow(1+returnRate,yrs)-1)*100).toFixed(0)}%</div></div>
+  `;
+
+  $('fire-alloc-bars').innerHTML = allocs.map(a=>`
+    <div class="bar-row">
+      <div class="bar-label">${a.l}</div>
+      <div class="bar-track" style="flex:1"><div class="bar-fill" style="width:${a.p}%;background:${a.c}"></div></div>
+      <div class="bar-pct" style="color:${a.c}">${a.p}%</div>
+    </div>
+  `).join('');
+
+  const step = Math.max(1,Math.floor(yrs/4));
+  let tlHtml = '';
+  for(let i=1;i<=4;i++){
+    const y=i*step, yr=age+y;
+    const cFV = corpus*100000*Math.pow(1+returnRate,y)+sipNeeded*((Math.pow(1+returnRate/12,y*12)-1)/(returnRate/12));
+    const pct = Math.min(100,Math.round(cFV/fireCorpus*100));
+    tlHtml += `<div class="tl-item"><div class="tl-dot"></div><div class="tl-year">Age ${yr}</div><div class="tl-title">${i===4?'🎯 FIRE Achieved!':'Milestone '+i}</div><div class="tl-desc">Corpus: ₹${(cFV/100000).toFixed(0)}L · ${pct}% of target · Monthly SIP: ${fmt(sipNeeded)}</div></div>`;
+  }
+  $('fire-timeline').innerHTML = tlHtml;
+
+  $('fire-actions').innerHTML = `
+    <div class="insight"><div class="insight-icon">🗓️</div><div>
+      <div class="insight-title">Months 1–3: Foundation</div>
+      <div class="insight-body">Open NPS Tier-1 account (₹500 min). Max EPF voluntary contribution. Start ELSS SIP for 80C. Build 3-month emergency fund in liquid MF. Buy term insurance (${Math.round(income*12*10/100000)*10}L cover).</div>
+    </div></div>
+    <div class="insight"><div class="insight-icon">📈</div><div>
+      <div class="insight-title">Months 4–12: SIP Ramp-Up</div>
+      <div class="insight-body">Start SIP of ${fmt(sipNeeded)} across ${allocs.map(a=>a.l).slice(0,2).join(' + ')}. Activate 10% annual step-up. Enable auto-debit on salary day. Review once quarterly.</div>
+    </div></div>
+    <div class="insight"><div class="insight-icon">🔄</div><div>
+      <div class="insight-title">Annual: Rebalance & Review</div>
+      <div class="insight-body">Rebalance to target allocation every December. Move 10% of corpus from equity to debt 5 years before FIRE age. Increase insurance cover with each job change. Review FIRE corpus target annually vs inflation.</div>
+    </div></div>
+  `;
+
+  $('fire-insights-list').innerHTML = `
+    <div class="insight"><div class="insight-icon">💡</div><div>
+      <div class="insight-title">Step-Up SIP: Most Powerful Lever <span class="tag tag-green">High Impact</span></div>
+      <div class="insight-body">Starting at ${fmt(sipNeeded)} and stepping up 10% annually reduces required starting SIP by ~28%. After year ${Math.min(5,yrs)}, your SIP will be ${fmt(sipNeeded*Math.pow(1.1,5))} but feels natural with income growth.</div>
+    </div></div>
+    <div class="insight"><div class="insight-icon">🏠</div><div>
+      <div class="insight-title">Home Loan vs Investing</div>
+      <div class="insight-body">If home loan rate &lt; 8.5%, do NOT prepay — invest surplus instead. At 10% equity returns you gain 1.5%+ annually. But if rate &gt; 9%, prepay first before increasing equity SIP.</div>
+    </div></div>
+    <div class="insight"><div class="insight-icon">⚠️</div><div>
+      <div class="insight-title">Edge Case: Sequence of Returns Risk <span class="tag tag-amber">Important</span></div>
+      <div class="insight-body">Market crash in first 5 years post-FIRE can permanently damage corpus. Build 2-year cash buffer at FIRE date. Keep 3 years of expenses in short-duration debt funds for bucket strategy.</div>
+    </div></div>
+  `;
+}
+
+function resetFIRE() {
+  $('fire-form-card').classList.remove('hidden');
+  $('fire-result-area').classList.add('hidden');
+}
+
+/* ===== LIFE ADVISOR ===== */
+const ADVISOR_PROMPTS = {
+  bonus: 'I just received a ₹5 lakh annual performance bonus. I am 34 years old, in the 30% tax bracket, have a home loan EMI of ₹28,000/month, and existing SIPs of ₹8,000/month. What is the most tax-efficient and wealth-building way to deploy this bonus?',
+  marriage: 'I am getting married in 6 months. My salary is ₹1.2 LPA, my partner earns ₹80,000/month. How should we plan our finances jointly? Cover HRA optimisation, NPS matching, joint vs separate insurance, SIP splits, and emergency fund consolidation.',
+  baby: 'We are expecting our first baby in 4 months. I earn ₹90,000/month, spouse earns ₹60,000/month. What financial steps should we take immediately — child education corpus, life insurance enhancement, maternity leave planning, and healthcare provisions?',
+  inheritance: 'I inherited ₹25 lakhs from my grandfather. I am 40 years old, moderate risk appetite, existing SIPs of ₹15,000/month, no outstanding loans. I want to deploy this inheritance optimally for retirement in 20 years. Give me a specific allocation plan.',
+  regime: 'Please compare Old vs New tax regime for me. My salary is ₹18 LPA, I receive HRA of ₹3 LPA and pay rent of ₹2.4 LPA in Mumbai (metro), I have 80C investments of ₹1.5L (ELSS + EPF), home loan interest of ₹2.2L, and health insurance premium of ₹25,000. Show exact tax under both regimes and tell me the better choice.',
+  overlap: 'I have a ₹50 lakh mutual fund portfolio but suspect significant overlap. My funds are: HDFC Flexi Cap, Mirae Asset Large Cap, Axis Bluechip, Parag Parikh Flexi Cap, and DSP Midcap. Analyse the overlap, calculate approximate true XIRR impact, and give me a rebalancing plan.',
+  job: 'I just got a 35% salary hike — going from ₹80,000 to ₹1,08,000/month take-home. I am 30 years old. How should I restructure my finances with this extra ₹28,000/month? Prioritise by impact: tax saving, SIP increase, loan prepayment, or emergency fund.',
+  retire: 'I want to retire at 45. I am currently 35 with ₹80 lakh corpus, income ₹1.5 LPA, expenses ₹60,000/month, no loans. Is 10 years enough? What FIRE corpus do I need? Give me a detailed 10-year plan with year-by-year targets.'
+};
+
+let advisorHistory = [];
+let advisorMsgId = 0;
+
+function setAdvisorPrompt(key) {
+  $('advisor-input').value = ADVISOR_PROMPTS[key];
+  $('advisor-input').focus();
+}
+
+async function sendAdvisor() {
+  const input = $('advisor-input');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+
+  addMsg('advisor-feed','user',text);
+  const tid = addTypingMsg('advisor-feed');
+
+  advisorHistory.push({role:'user',content:text});
+  if(advisorHistory.length>20) advisorHistory=advisorHistory.slice(-20);
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:`You are an AI Money Mentor on Economic Times, India's leading financial publication. Provide specific, personalised financial guidance for Indian users dealing with life events.
+
+FORMAT:
+- Start with a 1-sentence situation summary
+- Give numbered ACTION STEPS with exact numbers (SIP amounts, allocation %, tax savings)
+- Reference Indian products: ELSS, NPS Tier-1, PPF, EPF VPF, SGB, direct equity, FD, liquid MF
+- Reference tax sections: 80C, 80D, 80CCD(1B), 24(b), HRA, LTCG, STCG
+- Amounts in ₹, Lakhs (L), Crores (Cr)
+- Handle edge cases explicitly (old vs new regime, portfolio overlap, joint HRA claims)
+- End with: "⚖️ AI guidance only — not SEBI-licensed financial advice. Consult a SEBI-registered adviser for personalised decisions."`,
+        messages: advisorHistory
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.map(b=>b.text||'').join('') || 'Unable to process. Please try again.';
+    removeMsg(tid);
+    addMsg('advisor-feed','ai',reply);
+    advisorHistory.push({role:'assistant',content:reply});
+  } catch(e) {
+    removeMsg(tid);
+    addMsg('advisor-feed','ai','⚠️ Connection error. Please check your network and try again.');
+  }
+}
+
+function addMsg(feedId, role, text) {
+  const feed = $(feedId);
+  const id = 'msg-'+(++advisorMsgId);
+  const div = document.createElement('div');
+  div.className = `msg ${role}`; div.id = id;
+  const formatted = text.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');
+  div.innerHTML = `<div class="avatar ${role==='ai'?'av-ai':'av-ai'}" style="${role==='user'?'background:rgba(244,114,182,0.15);color:var(--pink)':''}">${role==='ai'?'₹':'U'}</div><div class="bubble">${formatted}</div>`;
+  feed.appendChild(div);
+  feed.scrollTop = feed.scrollHeight;
+  return id;
+}
+
+function addTypingMsg(feedId) {
+  const feed = $(feedId);
+  const id = 'typing-'+Date.now();
+  const div = document.createElement('div');
+  div.className = 'msg ai'; div.id = id;
+  div.innerHTML = `<div class="avatar av-ai">₹</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  feed.appendChild(div); feed.scrollTop=feed.scrollHeight;
+  return id;
+}
+
+function removeMsg(id) { $(id)?.remove(); }
+
+/* ===== TAX WIZARD ===== */
+function calcTax() {
+  const ctc = n('t-ctc')||1800000, hra = n('t-hra')||0, rent = n('t-rent')||0;
+  const c80 = n('t-80c')||0, hloan = n('t-hloan')||0, d80 = n('t-80d')||0, nps = n('t-nps')||0;
+  const city = g('t-city');
+  const r = bestRegime(ctc,hra,rent,city,c80,d80,nps,hloan);
+  const bracket = ctc>1500000?'30%':ctc>1000000?'20%':'5–20%';
+  const rate = ctc>1500000?0.3:ctc>1000000?0.2:0.1;
+
+  $('tax-form-card').classList.add('hidden');
+  $('tax-result-area').classList.remove('hidden');
+
+  $('regime-compare').innerHTML = `
+    <div class="regime-box${r.better==='Old'?' winner':''}">
+      <div class="regime-name">Old Regime ${r.better==='Old'?'✅ Better':''}</div>
+      <div class="regime-tax">${fmt(r.oldTax)}</div>
+      <div class="regime-detail">Taxable income: ${fmt(r.oldTaxable)}<br>Deductions claimed: ${fmt(r.oldDed)}<br>HRA exemption: ${fmt(r.hraEx)}</div>
+    </div>
+    <div class="regime-box${r.better==='New'?' winner':''}">
+      <div class="regime-name">New Regime ${r.better==='New'?'✅ Better':''}</div>
+      <div class="regime-tax">${fmt(r.newTax)}</div>
+      <div class="regime-detail">Taxable income: ${fmt(r.newTaxable)}<br>Standard deduction: ₹75,000<br>No other deductions</div>
+    </div>
+  `;
+
+  $('regime-verdict').innerHTML = `
+    <div class="insight mt12">
+      <div class="insight-icon">${r.better==='Old'?'📋':'🆕'}</div>
+      <div><div class="insight-title"><b>${r.better} Regime</b> saves you <b style="color:var(--green)">${fmt(r.saving)}/year</b></div>
+      <div class="insight-body">${r.better==='Old'
+        ?`Your deductions (HRA: ${fmt(r.hraEx)}, 80C: ${fmt(Math.min(150000,c80))}, home loan: ${fmt(Math.min(200000,hloan))}, NPS: ${fmt(Math.min(50000,nps))}) make Old Regime significantly better. Maximise these further.`
+        :`Your deductions are relatively low compared to simplified New Regime slabs. Switching to New Regime gives higher in-hand salary. ${r.hraEx===0&&rent===0?'No rent paid — HRA exemption is ₹0, confirming New Regime choice.':''}`
+      }</div></div>
+    </div>
+    ${r.better==='Old'&&rent===0&&hra>0?`<div class="insight"><div class="insight-icon">⚠️</div><div><div class="insight-title">Edge Case: HRA with No Rent <span class="tag tag-amber">Check This</span></div><div class="insight-body">You receive HRA of ${fmt(hra)} but claim ₹0 rent. HRA exemption is therefore ₹0. If you actually pay rent, declare it for ${fmt(hra*0.4)}-${fmt(hra*0.6)} in additional exemption. If not, New Regime may be better than it appears.</div></div></div>`:''}
+  `;
+
+  const deductions = [
+    {name:'Standard Deduction',amount:50000,max:50000,used:50000,section:'16(ia)'},
+    {name:'HRA Exemption',amount:r.hraEx,max:hra,used:r.hraEx,section:'10(13A)'},
+    {name:'80C (ELSS/EPF/PPF/LIC)',amount:Math.min(150000,c80),max:150000,used:c80,section:'80C'},
+    {name:'Health Insurance 80D',amount:Math.min(50000,d80),max:50000,used:d80,section:'80D'},
+    {name:'NPS 80CCD(1B)',amount:Math.min(50000,nps),max:50000,used:nps,section:'80CCD(1B)'},
+    {name:'Home Loan Interest 24(b)',amount:Math.min(200000,hloan),max:200000,used:hloan,section:'24(b)'},
+  ];
+
+  $('deduction-breakdown').innerHTML = deductions.map(d=>`
+    <div class="bar-row" style="margin-bottom:14px">
+      <div style="min-width:200px"><div style="font-size:12px;font-weight:500">${d.name}</div><div style="font-size:10px;color:var(--muted)">Section ${d.section} · Claimed: ${fmt(d.amount)}</div></div>
+      <div class="bar-track" style="flex:1"><div class="bar-fill" style="width:${Math.round(d.amount/d.max*100)}%;background:${d.amount>=d.max?'#10B981':'#F5A623'}"></div></div>
+      <div style="font-size:11px;font-weight:700;min-width:70px;text-align:right;color:${d.amount>=d.max?'var(--green)':'var(--accent)'}">${fmt(d.amount)} / ${fmt(d.max)}</div>
+    </div>
+  `).join('');
+
+  const opps = [];
+  if(nps<50000) opps.push({icon:'🏦',title:`Add ₹${(50000-nps).toLocaleString('en-IN')} more to NPS`,tag:'tag-green',body:`Section 80CCD(1B) allows ₹50,000 extra over 80C limit. Saves ${fmt((50000-nps)*rate)}/year at ${bracket} bracket. Open NPS Tier-1 via your bank or NSDL portal. PFRDA-regulated, low-cost (0.09% fee).`});
+  if(c80<150000) opps.push({icon:'📊',title:`Top up 80C by ₹${(150000-c80).toLocaleString('en-IN')} via ELSS`,tag:'tag-green',body:`ELSS mutual funds give same ₹1.5L deduction with only 3-year lock-in vs PPF's 15 years. Historically 12-14% CAGR vs PPF's 7.1%. Saves ${fmt((150000-c80)*rate)}/year.`});
+  if(d80<25000) opps.push({icon:'🏥',title:'Increase Health Insurance for 80D',tag:'tag-amber',body:`₹25,000 deduction for self+family. Add parents (senior citizens) for additional ₹50,000 deduction. Family floater plans cost ₹12,000–20,000/year and save ${fmt(25000*rate)} in tax.`});
+  if(hloan===0) opps.push({icon:'🏠',title:'Home Loan Interest Deduction',tag:'tag-purple',body:`Section 24(b) allows ₹2L deduction on home loan interest. At ${bracket} bracket, saves ${fmt(200000*rate)}/year. If buying a home, factor in this tax benefit in cost analysis.`});
+  if(rent===0&&hra>0) opps.push({icon:'🏢',title:'Start Paying Rent for HRA Exemption',tag:'tag-amber',body:`You receive HRA but don't pay rent. If you pay rent (even to parents), you can claim HRA exemption of ${fmt(hra*0.4)}–${fmt(hra*0.6)}. Requires rent receipts and PAN of landlord if rent > ₹1L/year.`});
+
+  $('tax-opportunities').innerHTML = opps.length>0 ? opps.map(o=>`
+    <div class="insight"><div class="insight-icon">${o.icon}</div>
+    <div><div class="insight-title">${o.title}<span class="tag ${o.tag}">${o.tag.includes('green')?'Save Tax':o.tag.includes('purple')?'Consider':''}</span></div>
+    <div class="insight-body">${o.body}</div></div></div>
+  `).join('') : '<div class="insight"><div class="insight-icon">✅</div><div><div class="insight-title">All major deductions utilised</div><div class="insight-body">You are already claiming most available deductions. Consider NPS if not maxed, or gifting to parents in lower bracket for additional tax efficiency.</div></div></div>';
+
+  // AI Tax Suggestions
+  const aiPrompt = `Tax analysis for Indian taxpayer FY 2024-25:
+CTC: ₹${(ctc/100000).toFixed(1)}L, HRA: ₹${(hra/100000).toFixed(1)}L, Rent: ₹${(rent/100000).toFixed(1)}L, City: ${city}
+80C: ₹${(c80/100000).toFixed(1)}L, 80D: ₹${(d80/1000).toFixed(0)}K, NPS: ₹${(nps/1000).toFixed(0)}K, Home loan interest: ₹${(hloan/100000).toFixed(1)}L
+Better regime: ${r.better} (saves ₹${Math.round(r.saving).toLocaleString('en-IN')})
+
+Give 3 specific, advanced tax-saving strategies for this person. Include exact product names, amounts, and savings calculations. Consider salary restructuring (NPS employer contribution, meal vouchers, LTA), capital gains harvesting, and HUF if applicable.`;
+
+  callClaude(aiPrompt).then(text=>{
+    $('tax-ai-box').innerHTML = `<div class="ai-box-header">⚡ AI personalised tax strategies</div><div class="ai-box-body">${text.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')}</div>`;
+  }).catch(()=>{
+    $('tax-ai-box').innerHTML = `<div class="ai-box-header">AI suggestions unavailable</div>`;
+  });
+}
+
+function resetTax() {
+  $('tax-form-card').classList.remove('hidden');
+  $('tax-result-area').classList.add('hidden');
+}
+
+/* ===== COUPLE'S PLANNER ===== */
+function cGoStep(step) {
+  [0,1,2].forEach(i=>{
+    $('c-step-'+i).classList.toggle('hidden', i!==step);
+    const st=$('cst-'+i);
+    st.classList.remove('active','done');
+    if(i===step) st.classList.add('active');
+    else if(i<step) st.classList.add('done');
+  });
+  const n1=g('c-p1-name')||'Partner 1', n2=g('c-p2-name')||'Partner 2';
+  $('cb-av1').textContent=n1.slice(0,2).toUpperCase();
+  $('cb-av2').textContent=n2.slice(0,2).toUpperCase();
+  $('cb-names').textContent=n1+' & '+n2;
+  $('c-p1-ins-head').textContent=n1+' — Insurance & Tax';
+  $('c-p2-ins-head').textContent=n2+' — Insurance & Tax';
+}
+
+async function genCouplePlan() {
+  cGoStep(2);
+  const results = $('couple-results');
+  results.innerHTML = `<div class="card"><div class="ai-box-header">⚡ Generating your joint financial plan...</div><div class="loading-dots"><span></span><span></span><span></span></div></div>`;
+
+  const p1 = {
+    name:g('c-p1-name')||'Partner 1', age:n('c-p1-age'), ctc:n('c-p1-ctc'),
+    hra:n('c-p1-hra'), rent:n('c-p1-rent'), city:g('c-p1-city'),
+    exp:n('c-p1-exp'), inv:n('c-p1-inv')*100000, loan:n('c-p1-loan')*100000,
+    risk:g('c-p1-risk'), term:n('c-p1-term'), health:n('c-p1-health'),
+    nps:n('c-p1-nps'), c80:n('c-p1-80c')
+  };
+  const p2 = {
+    name:g('c-p2-name')||'Partner 2', age:n('c-p2-age'), ctc:n('c-p2-ctc'),
+    hra:n('c-p2-hra'), rent:n('c-p2-rent'), city:g('c-p2-city'),
+    exp:n('c-p2-exp'), inv:n('c-p2-inv')*100000, loan:n('c-p2-loan')*100000,
+    risk:g('c-p2-risk'), term:n('c-p2-term'), health:n('c-p2-health'),
+    nps:n('c-p2-nps'), c80:n('c-p2-80c')
+  };
+  const j = {
+    sip:n('c-j-sip'), retire:n('c-j-retire'),
+    edu:n('c-j-edu')*100000, eduYr:n('c-j-edu-yr'),
+    home:n('c-j-home')*10000000, homeYr:n('c-j-home-yr')
+  };
+
+  const r1 = bestRegime(p1.ctc,p1.hra,p1.rent,p1.city,p1.c80,25000,p1.nps,0);
+  const r2 = bestRegime(p2.ctc,p2.hra,p2.rent,p2.city,p2.c80,25000,p2.nps,0);
+
+  const joinedIncome = p1.ctc+p2.ctc;
+  const totalExp = (p1.exp+p2.exp)*12;
+  const monthlySav = (joinedIncome/12)-p1.exp-p2.exp;
+  const netWorth = p1.inv+p2.inv-p1.loan-p2.loan;
+  const taxOld = r1.oldTax+r2.oldTax, taxOpt = Math.min(r1.oldTax,r1.newTax)+Math.min(r2.oldTax,r2.newTax);
+  const taxSaved = Math.max(0,taxOld-taxOpt);
+
+  const p1share = p1.ctc/joinedIncome;
+  const p1sip = Math.round(j.sip*p1share/500)*500, p2sip = j.sip-p1sip;
+
+  const eduSIP = j.edu>0 ? Math.round(j.edu*0.01/(Math.pow(1.01,j.eduYr*12)-1)) : 0;
+  const homeSIP = j.home>0 ? Math.round(j.home*0.008/(Math.pow(1.008,j.homeYr*12)-1)) : 0;
+
+  const p1termNeeded = Math.round(p1.ctc*10/100000)*10;
+  const p2termNeeded = Math.round(p2.ctc*10/100000)*10;
+  const p1termGap = Math.max(0,p1termNeeded-p1.term);
+  const p2termGap = Math.max(0,p2termNeeded-p2.term);
+  const totalHealth = p1.health+p2.health;
+  const healthGap = Math.max(0,20-totalHealth);
+  const p1npsGap = Math.max(0,50000-p1.nps), p2npsGap = Math.max(0,50000-p2.nps);
+
+  const projected10yr = monthlySav*12*((Math.pow(1.10,10)-1)/0.10)+(p1.inv+p2.inv)*Math.pow(1.10,10);
+
+  results.innerHTML = `
+    <!-- Summary Metrics -->
+    <div class="grid-4 mb12">
+      <div class="metric"><div class="metric-label">Combined Annual Income</div><div class="metric-value text-green">${fmtCr(joinedIncome)}</div><div class="metric-sub">₹${Math.round(joinedIncome/12).toLocaleString('en-IN')}/month</div></div>
+      <div class="metric"><div class="metric-label">Monthly Savings Capacity</div><div class="metric-value text-amber">${fmt(monthlySav)}</div><div class="metric-sub">${Math.round(monthlySav/(joinedIncome/12)*100)}% of joint income</div></div>
+      <div class="metric"><div class="metric-label">Combined Net Worth</div><div class="metric-value" style="color:${netWorth>=0?'var(--green)':'var(--red)'}">${netWorth>=0?fmtCr(netWorth):'-'+fmtCr(-netWorth)}</div><div class="metric-sub">Gross assets: ${fmtCr(p1.inv+p2.inv)}</div></div>
+      <div class="metric"><div class="metric-label">Annual Tax Savings Found</div><div class="metric-value text-green">${fmt(taxSaved)}</div><div class="metric-sub">Via regime optimisation</div></div>
+    </div>
+
+    <!-- Tax Regime -->
+    <div class="card">
+      <h4 class="mb12">1. Tax Regime Optimisation <span class="tag tag-green">Priority 1</span></h4>
+      <div class="grid-2 mb12">
+        <div class="regime-box${r1.better==='Old'?' winner':''}">
+          <div class="regime-name">${p1.name} → <b>${r1.better} Regime</b> ${r1.better==='Old'?'✅':''}</div>
+          <div class="regime-tax">${fmt(Math.min(r1.oldTax,r1.newTax))}<span style="font-size:12px;font-weight:400;color:var(--muted)">/yr</span></div>
+          <div class="regime-detail">HRA exempt: ${fmt(r1.hraEx)} · Saves ${fmt(r1.saving)} vs alt regime</div>
+        </div>
+        <div class="regime-box${r2.better==='Old'?' winner':''}">
+          <div class="regime-name">${p2.name} → <b>${r2.better} Regime</b> ${r2.better==='Old'?'✅':''}</div>
+          <div class="regime-tax">${fmt(Math.min(r2.oldTax,r2.newTax))}<span style="font-size:12px;font-weight:400;color:var(--muted)">/yr</span></div>
+          <div class="regime-detail">HRA exempt: ${fmt(r2.hraEx)} · Saves ${fmt(r2.saving)} vs alt regime</div>
+        </div>
+      </div>
+      ${p1.rent===0&&p1.hra>0?`<div class="insight"><div class="insight-icon">⚠️</div><div><div class="insight-title">Edge Case: ${p1.name} has HRA but pays no rent <span class="tag tag-amber">Action Required</span></div><div class="insight-body">HRA exemption = ₹0 since rent = ₹0. If ${p1.name} pays rent (even to parents), this unlocks ${fmt(p1.hra*0.4)}–${fmt(p1.hra)} in exemption. If genuinely no rent, New regime is likely better. Re-evaluate.</div></div></div>`:''}
+    </div>
+
+    <!-- SIP Split -->
+    <div class="card">
+      <h4 class="mb12">2. Optimised SIP Split Across Goals <span class="tag tag-purple">Priority 2</span></h4>
+      ${[
+        {label:'Retirement SIPs (Joint)',p1amt:p1sip,p2amt:p2sip,note:'ELSS + Index fund SIPs. Higher earner carries more for tax efficiency.'},
+        j.edu>0?{label:`Child Education — ${fmtL(j.edu)} in ${j.eduYr} years`,p1amt:Math.round(eduSIP*p1share),p2amt:Math.round(eduSIP*(1-p1share)),note:'Equity MF for 10+ yr horizon. Shift to debt 3 years before goal.'}:null,
+        j.home>0?{label:`Home Purchase — ${(j.home/10000000).toFixed(1)}Cr in ${j.homeYr} years`,p1amt:Math.round(homeSIP*p1share),p2amt:Math.round(homeSIP*(1-p1share)),note:'Debt + arbitrage funds for medium-term goal (capital preservation).'}:null
+      ].filter(Boolean).map(row=>`
+        <div style="margin-bottom:16px">
+          <div class="row mb8" style="justify-content:space-between">
+            <span style="font-size:13px;font-weight:500">${row.label}</span>
+            <span style="font-size:13px;font-weight:700;color:var(--accent)">${fmt(row.p1amt+row.p2amt)}/mo</span>
+          </div>
+          <div class="split-bar" style="height:10px">
+            <div class="split-fill-p1" style="width:${Math.round(row.p1amt/(row.p1amt+row.p2amt||1)*100)}%"></div>
+            <div class="split-fill-p2" style="width:${Math.round(row.p2amt/(row.p1amt+row.p2amt||1)*100)}%"></div>
+          </div>
+          <div class="row mt8" style="justify-content:space-between">
+            <span style="font-size:11px;color:var(--p1)">${p1.name}: ${fmt(row.p1amt)}</span>
+            <span style="font-size:11px;color:var(--p2)">${p2.name}: ${fmt(row.p2amt)}</span>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${row.note}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- NPS Matching -->
+    <div class="card">
+      <h4 class="mb12">3. NPS Matching Strategy <span class="tag tag-purple">Priority 2</span></h4>
+      <div class="grid-2">
+        <div class="insight"><div class="insight-icon">🏦</div><div>
+          <div class="insight-title">${p1.name}: NPS Gap — ${fmt(p1npsGap)}/yr</div>
+          <div class="insight-body">${p1npsGap>0?`Add ₹${p1npsGap.toLocaleString('en-IN')}/year to NPS Tier-1 (80CCD(1B)) → saves ${fmt(p1npsGap*0.3)}/yr at 30% bracket. Employer NPS (10% of basic) is additional via 80CCD(2) — check with HR.`:'NPS 80CCD(1B) fully utilised. Add employer NPS for additional 80CCD(2) benefit.'}</div>
+        </div></div>
+        <div class="insight"><div class="insight-icon">🏦</div><div>
+          <div class="insight-title">${p2.name}: NPS Gap — ${fmt(p2npsGap)}/yr</div>
+          <div class="insight-body">${p2npsGap>0?`Add ₹${p2npsGap.toLocaleString('en-IN')}/year → saves ${fmt(p2npsGap*0.2)}/yr at 20% bracket. Consider NPS Tier-2 for flexible (non-locked) retirement savings alongside Tier-1.`:'NPS benefit fully utilised. Focus on ELSS and index fund SIPs for additional wealth creation.'}</div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- Insurance -->
+    <div class="card">
+      <h4 class="mb12">4. Joint Insurance Coverage Analysis <span class="tag tag-amber">Priority 3</span></h4>
+      <div class="nw-bars">
+        <div class="nw-row">
+          <div class="nw-label">${p1.name} — Term</div>
+          <div class="nw-bar-track flex1"><div class="nw-bar-fill" style="width:${Math.min(100,Math.round(p1.term/p1termNeeded*100))}%;background:${p1termGap>0?'var(--accent)':'var(--green)'}"></div></div>
+          <div class="nw-val" style="color:${p1termGap>0?'var(--accent)':'var(--green)'}">${p1.term}L / ${p1termNeeded}L</div>
+        </div>
+        <div class="nw-row">
+          <div class="nw-label">${p2.name} — Term</div>
+          <div class="nw-bar-track flex1"><div class="nw-bar-fill" style="width:${Math.min(100,Math.round(p2.term/p2termNeeded*100))}%;background:${p2termGap>0?'var(--accent)':'var(--green)'}"></div></div>
+          <div class="nw-val" style="color:${p2termGap>0?'var(--accent)':'var(--green)'}">${p2.term}L / ${p2termNeeded}L</div>
+        </div>
+        <div class="nw-row">
+          <div class="nw-label">Joint Health Cover</div>
+          <div class="nw-bar-track flex1"><div class="nw-bar-fill" style="width:${Math.min(100,Math.round(totalHealth/20*100))}%;background:${healthGap>0?'var(--accent)':'var(--green)'}"></div></div>
+          <div class="nw-val" style="color:${healthGap>0?'var(--accent)':'var(--green)'}">${totalHealth}L / 20L</div>
+        </div>
+      </div>
+      <div class="mt12">
+        ${p1termGap>0?`<div class="insight mb8"><div class="insight-icon">🛡️</div><div><div class="insight-title">${p1.name} needs ${p1termGap}L more term cover <span class="tag tag-red">Critical</span></div><div class="insight-body">Pure term plan costs ~₹900–1,400/month at age ${p1.age}. Buy ASAP — premiums rise 8–10% every year you wait. Never substitute with ULIP or endowment.</div></div></div>`:''}
+        ${p2termGap>0?`<div class="insight mb8"><div class="insight-icon">🛡️</div><div><div class="insight-title">${p2.name} needs ${p2termGap}L more term cover <span class="tag tag-red">Critical</span></div><div class="insight-body">At age ${p2.age}, pure term costs ~₹600–1,000/month for ${p2termNeeded}L cover. Younger = cheaper. Buy now, not later.</div></div></div>`:''}
+        ${healthGap>0?`<div class="insight"><div class="insight-icon">🏥</div><div><div class="insight-title">Health cover gap of ${healthGap}L <span class="tag tag-amber">Important</span></div><div class="insight-body">Consider a family floater plan (₹20L, ~₹15,000–22,000/year). Both premiums qualify for 80D deduction (up to ₹25,000 self + ₹50,000 parents). Top-up super top-up plans offer cost-effective enhancement.</div></div></div>`:''}
+      </div>
+    </div>
+
+    <!-- Net Worth Projection -->
+    <div class="card">
+      <h4 class="mb12">5. Combined Net Worth Tracker</h4>
+      <div class="grid-3 mb12">
+        <div class="metric"><div class="metric-label">${p1.name}'s Assets</div><div class="metric-value" style="color:var(--p1)">${fmtCr(p1.inv)}</div><div class="metric-sub">Loans: ${fmtL(p1.loan)}</div></div>
+        <div class="metric"><div class="metric-label">${p2.name}'s Assets</div><div class="metric-value" style="color:var(--p2)">${fmtCr(p2.inv)}</div><div class="metric-sub">Loans: ${fmtL(p2.loan)}</div></div>
+        <div class="metric"><div class="metric-label">10-Year Projected Corpus</div><div class="metric-value text-green">${fmtCr(projected10yr)}</div><div class="metric-sub">At 10% return, current savings rate</div></div>
+      </div>
+    </div>
+
+    <!-- AI Insights -->
+    <div class="ai-box" id="couple-ai-box">
+      <div class="ai-box-header">⚡ Generating personalised AI insights for ${p1.name} & ${p2.name}...</div>
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost btn-sm" onclick="cGoStep(0)">← Edit Profiles</button>
+    </div>
+
+    <div class="disclaimer">
+      <strong>⚖️ Regulatory Disclaimer:</strong> Joint financial planning guidance provided by AI for educational purposes only. Not SEBI-licensed financial advice. HRA split, NPS contributions, and insurance recommendations are indicative. Tax calculations use FY 2024-25 slabs. Consult a SEBI-registered investment adviser and CA for your actual financial plan.
+    </div>
+  `;
+
+  // AI personalised insights
+  const aiPt = `Couple's joint financial analysis (India, FY 2024-25):
+${p1.name}: Age ${p1.age}, CTC ₹${(p1.ctc/100000).toFixed(1)}L, ${p1.risk} risk, investments ₹${(p1.inv/100000).toFixed(0)}L, loans ₹${(p1.loan/100000).toFixed(0)}L, term insurance: ${p1.term}L, ${r1.better} regime better
+${p2.name}: Age ${p2.age}, CTC ₹${(p2.ctc/100000).toFixed(1)}L, ${p2.risk} risk, investments ₹${(p2.inv/100000).toFixed(0)}L, loans ₹${(p2.loan/100000).toFixed(0)}L, term insurance: ${p2.term}L, ${r2.better} regime better
+Joint: Combined income ₹${(joinedIncome/100000).toFixed(1)}L/yr, monthly savings ₹${Math.round(monthlySav).toLocaleString('en-IN')}, SIP ₹${j.sip}/mo, net worth ₹${(netWorth/100000).toFixed(0)}L
+Goals: Retire age ${j.retire}${j.edu>0?', child education ₹'+fmtL(j.edu)+' in '+j.eduYr+'yrs':''}${j.home>0?', home ₹'+(j.home/10000000).toFixed(1)+'Cr in '+j.homeYr+'yrs':''}
+
+Give 4 sharp, specific insights: (1) most impactful immediate action with exact numbers (2) tax optimisation specific to both regimes (3) goal prioritisation recommendation (4) one edge case or risk specific to their situation. Use Indian products throughout.`;
+
+  callClaude(aiPt).then(text=>{
+    $('couple-ai-box').innerHTML=`<div class="ai-box-header">⚡ AI insights for ${p1.name} & ${p2.name}</div><div class="ai-box-body">${text.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')}</div>`;
+  }).catch(()=>{
+    $('couple-ai-box').innerHTML=`<div class="ai-box-header">AI insights unavailable — check connection.</div>`;
+  });
+}
+
+/* ===== INIT ===== */
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Animate home page entry
+  document.querySelectorAll('.feat-card').forEach((c,i)=>{
+    c.style.opacity='0';c.style.transform='translateY(16px)';
+    setTimeout(()=>{c.style.transition='all 0.4s ease';c.style.opacity='1';c.style.transform='translateY(0)';},100+i*80);
+  });
+});
+</script>
+</body>
+</html>
