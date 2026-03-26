@@ -1,6 +1,3 @@
-Here is a complete, detailed `README.md` file for your GitHub repository, based on the provided HTML code for the "ET Money Mentor" project.
-
----
 
 # ET Money Mentor — AI Financial Advisor
 
