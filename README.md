@@ -8,7 +8,7 @@
 ![ET Money Mentor Hero Section](https://i.ibb.co/MymSPp7K/Prototype.png)
 
 ## 🚀 Live Demo
-[Link to your live demo if deployed]
+https://codebypabitra.github.io/AI_Money_Mentor/
 
 ## ✨ Key Features
 
@@ -52,7 +52,7 @@ The platform is packed with advanced financial tools, each designed to address a
 - **Styling:** CSS Grid, Flexbox, Custom Properties (CSS Variables)
 - **Typography:** Google Fonts (Fraunces, DM Sans)
 - **AI / Backend Simulation:** WebSockets (`wss://backend.buildpicoapps.com/api/chatbot/chat`)
-- **Hosting:** [Your hosting platform, e.g., GitHub Pages, Netlify, Vercel]
+- **Hosting:** https://codebypabitra.github.io/AI_Money_Mentor/
 
 ## 🚦 How to Use
 
