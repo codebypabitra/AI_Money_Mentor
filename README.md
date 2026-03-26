@@ -5,7 +5,7 @@
 
 **ET Money Mentor** is an AI-powered financial wellness platform built for the Economic Times AI Hackathon (Avataar.ai × Economic Times). It provides free, personalized financial guidance, planning, and tax optimization tools for Indian users. The application is a comprehensive, interactive financial dashboard that simulates the role of a digital financial advisor, covering everything from tax planning to portfolio analysis and retirement planning.
 
-![ET Money Mentor Hero Section](https://via.placeholder.com/800x400/09101E/F0F4FF?text=ET+Money+Mentor+Screenshot) *(Replace with an actual screenshot of your app)*
+![ET Money Mentor Hero Section](https://i.ibb.co/MymSPp7K/Prototype.png) *(Replace with an actual screenshot of your app)*
 
 ## 🚀 Live Demo
 [Link to your live demo if deployed]
